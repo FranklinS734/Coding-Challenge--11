@@ -68,36 +68,63 @@ class Library {
         this.books.forEach(book => { //Loops through books using forEach
             console.log(book.getDetails()); //Runs and logs getDetails() forEach book
         });
-    };}
+    };
 
-    // Test Case
-    const library = new Library();
-library.addBook(book1);
-library.listBooks();
+     //Task 4 - Implemented Book Borrowing
+     lendBook(borrowerId, isbn) { 
+        let book = this.books.find((bk) => bk.isbn === isbn); //Finding book by isbn using .find()
+        let borrower = this.borrowers.find((br) => br.borrowerId === borrowerId); 
+        if (!book) { 
+            console.log(`No book found with ISBN: ${isbn}!`); 
+            return;
+        } if (!borrower) { //If borrower wasn't found
+            console.log(`No borrower found with borrowerId: ${borrowerId}!`); 
+            return;
+        } if (book.copies > 0) { 
+            book.updateCopies(-1); 
+            borrower.borrowBook(book); 
+            console.log("Book borrowed successfully."); 
+        } else { //If no copies are in stock
+            console.log(`No copies of ${book.title} in stock!`) 
+        };
+     };
+    
+
+     //Task 5 - Implemented Book Returns
+     returnBook(borrowerId, isbn) { //Add a method returnBook(borrowerId, isbn)
+        let book = this.books.find((bk) => bk.isbn === isbn); //Used to find book by isbn using .find()
+        let borrower = this.borrowers.find((br) => br.borrowerId === borrowerId); 
+        if (!book) { //If book wasn't found
+            console.log(`No book found with ISBN: ${isbn}!`);
+            return;
+        } if (!borrower) { //If borrower wasn't found
+            console.log(`No borrower found with borrowerId: ${borrowerId}!`); 
+            return;
+        } else {
+            book.updateCopies(1); 
+            borrower.returnBook(book); 
+            console.log("Book returned successfully."); 
+        }
+    }
+}
+
+//Test Case 3
+const library = new Library();
+library.borrowers.push(borrower1); 
+library.addBook(book1); 
+library.listBooks(); 
 // Expected output: "Title: The Great Gatsby, Author: F. Scott Fitzgerald, ISBN: 123456, Copies: 4"
 
-// Task 4: Implementing Book Borrowing
-
-lendBook(borrowerId, isbn) { 
-    let book = this.books.find((bk) => bk.isbn === isbn); //Finding book by isbn using .find()
-    let borrower = this.borrowers.find((br) => br.borrowerId === borrowerId); 
-    if (!book) { 
-        console.log(`No book found with ISBN: ${isbn}!`); 
-        return;
-    } if (!borrower) { //If borrower wasn't found
-        console.log(`No borrower found with borrowerId: ${borrowerId}!`); 
-        return;
-    } if (book.copies > 0) { 
-        book.updateCopies(-1); 
-        borrower.borrowBook(book); 
-        console.log("Book borrowed successfully."); 
-    } else { //If no copies are in stock
-        console.log(`No copies of ${book.title} in stock!`) 
-    };
-};
-
+//Test Case 4
 library.lendBook(201, 123456);
 console.log(book1.getDetails());
 // Expected output: "Title: The Great Gatsby, Author: F. Scott Fitzgerald, ISBN: 123456, Copies: 3"
 console.log(borrower1.borrowedBooks);
 // Expected output: ["The Great Gatsby"]
+
+//Test Case 5
+library.returnBook(201, 123456);
+console.log(book1.getDetails());
+// Expected output: "Title: The Great Gatsby, Author: F. Scott Fitzgerald, ISBN: 123456, Copies: 4"
+console.log(borrower1.borrowedBooks);
+// Expected output: []
